@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: lipubot
+    name: lipubot1
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn bot:flask_app --bind 0.0.0.0:$PORT --workers 2 --worker-class gevent --timeout 120
@@ -18,7 +18,7 @@ services:
     autoDeploy: true
 
   - type: worker
-    name: lipubot
+    name: lipubot1
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python bot.py
@@ -41,7 +41,7 @@ services:
     numInstances: 1
 
 envGroups:
-  - name: lipubot
+  - name: lipubot1
     envVars:
       - key: MONGO_URI
       - key: FLASK_URL
