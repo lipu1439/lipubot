@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: lipubot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn bot:flask_app --bind 0.0.0.0:$PORT --workers 2 --worker-class gevent --timeout 120
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        required: true
+      - key: FLASK_URL
+        required: true
+      - key: SHORTNER_API
+        required: true
+    plan: free
+    healthCheckPath: /verify/healthcheck
+    autoDeploy: true
+
+  - type: worker
+    name: lipubot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: BOT_TOKEN
+        required: true
+      - key: MONGO_URI
+        fromGroup: true
+      - key: LIKE_API_URL
+        required: true
+      - key: HOW_TO_VERIFY_URL
+        required: true
+      - key: VIP_ACCESS_URL
+        required: true
+      - key: ADMIN_IDS
+        required: true
+      - key: FLASK_URL
+        fromGroup: true
+    plan: free
+    numInstances: 1
+
+envGroups:
+  - name: lipubot
+    envVars:
+      - key: MONGO_URI
+      - key: FLASK_URL
